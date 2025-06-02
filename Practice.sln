@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35707.178
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Practice", "Practice\Practice.csproj", "{EDE2DC02-4313-45E4-9F8D-17DF1E99E40A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIs", "APIs\APIs.csproj", "{1854E1BB-C351-4A7E-A50B-2C5DF49BC298}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication", "Authentication\Authentication.csproj", "{C61D710C-7AA5-4672-B593-32C092BBEC76}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EDE2DC02-4313-45E4-9F8D-17DF1E99E40A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDE2DC02-4313-45E4-9F8D-17DF1E99E40A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDE2DC02-4313-45E4-9F8D-17DF1E99E40A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDE2DC02-4313-45E4-9F8D-17DF1E99E40A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1854E1BB-C351-4A7E-A50B-2C5DF49BC298}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1854E1BB-C351-4A7E-A50B-2C5DF49BC298}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1854E1BB-C351-4A7E-A50B-2C5DF49BC298}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1854E1BB-C351-4A7E-A50B-2C5DF49BC298}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C61D710C-7AA5-4672-B593-32C092BBEC76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C61D710C-7AA5-4672-B593-32C092BBEC76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C61D710C-7AA5-4672-B593-32C092BBEC76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C61D710C-7AA5-4672-B593-32C092BBEC76}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
