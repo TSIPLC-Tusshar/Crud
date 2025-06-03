@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIs", "APIs\APIs.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication", "Authentication\Authentication.csproj", "{C61D710C-7AA5-4672-B593-32C092BBEC76}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySqlAuthAPI", "MySqlAuthAPI\MySqlAuthAPI.csproj", "{F78CF568-94AC-49CE-801C-C45927902261}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{C61D710C-7AA5-4672-B593-32C092BBEC76}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C61D710C-7AA5-4672-B593-32C092BBEC76}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C61D710C-7AA5-4672-B593-32C092BBEC76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F78CF568-94AC-49CE-801C-C45927902261}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F78CF568-94AC-49CE-801C-C45927902261}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F78CF568-94AC-49CE-801C-C45927902261}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F78CF568-94AC-49CE-801C-C45927902261}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
