@@ -12,8 +12,8 @@ using MySqlAuthAPI.Data;
 namespace MySqlAuthAPI.Migrations
 {
     [DbContext(typeof(MySqlDbContext))]
-    [Migration("20250602121400_InitialMigrationMySql")]
-    partial class InitialMigrationMySql
+    [Migration("20250605110201_intialmigratedMysql")]
+    partial class intialmigratedMysql
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -48,7 +48,7 @@ namespace MySqlAuthAPI.Migrations
                         .IsUnique()
                         .HasDatabaseName("RoleNameIndex");
 
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.ToTable("aspnetroles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -73,7 +73,7 @@ namespace MySqlAuthAPI.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims", (string)null);
+                    b.ToTable("aspnetroleclaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -98,7 +98,7 @@ namespace MySqlAuthAPI.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims", (string)null);
+                    b.ToTable("aspnetuserclaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -135,7 +135,7 @@ namespace MySqlAuthAPI.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles", (string)null);
+                    b.ToTable("aspnetuserroles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -157,21 +157,25 @@ namespace MySqlAuthAPI.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("MySqlAuthAPI.Data.UserMaster", b =>
+            modelBuilder.Entity("MySqlAuthAPI.Data.Entities.Aspnetuser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
 
                     b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
+                        .HasColumnType("int(11)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("longtext");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("longtext")
+                        .HasDefaultValueSql("'NULL'");
 
                     b.Property<string>("Email")
+                        .ValueGeneratedOnAdd()
                         .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
+                        .HasColumnType("varchar(256)")
+                        .HasDefaultValueSql("'NULL'");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("tinyint(1)");
@@ -180,36 +184,52 @@ namespace MySqlAuthAPI.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetime(6)");
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(6)
+                        .HasColumnType("datetime(6)")
+                        .HasDefaultValueSql("'NULL'");
 
                     b.Property<string>("NormalizedEmail")
+                        .ValueGeneratedOnAdd()
                         .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
+                        .HasColumnType("varchar(256)")
+                        .HasDefaultValueSql("'NULL'");
 
                     b.Property<string>("NormalizedUserName")
+                        .ValueGeneratedOnAdd()
                         .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
+                        .HasColumnType("varchar(256)")
+                        .HasDefaultValueSql("'NULL'");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("longtext");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("longtext")
+                        .HasDefaultValueSql("'NULL'");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("longtext");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("longtext")
+                        .HasDefaultValueSql("'NULL'");
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("SecurityStamp")
-                        .HasColumnType("longtext");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("longtext")
+                        .HasDefaultValueSql("'NULL'");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("UserName")
+                        .ValueGeneratedOnAdd()
                         .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
+                        .HasColumnType("varchar(256)")
+                        .HasDefaultValueSql("'NULL'");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PRIMARY");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -218,7 +238,94 @@ namespace MySqlAuthAPI.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
-                    b.ToTable("AspNetUsers", (string)null);
+                    b.HasIndex(new[] { "NormalizedEmail" }, "EmailIndex");
+
+                    b.HasIndex(new[] { "NormalizedUserName" }, "UserNameIndex")
+                        .IsUnique();
+
+                    b.ToTable("aspnetusers", (string)null);
+                });
+
+            modelBuilder.Entity("MySqlAuthAPI.Data.Entities.LoginSession", b =>
+                {
+                    b.Property<int>("SessionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("SessionId"));
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("ExpiredOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsSessionExpired")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("LoginFrom")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("SessionName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Token")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Validity")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("SessionId")
+                        .HasName("PRIMARY");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("loginsessions", (string)null);
+                });
+
+            modelBuilder.Entity("MySqlAuthAPI.Data.Entities.UserMaster", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("UpdatedOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id")
+                        .HasName("PRIMARY");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("usermaster", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -232,7 +339,7 @@ namespace MySqlAuthAPI.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("MySqlAuthAPI.Data.UserMaster", null)
+                    b.HasOne("MySqlAuthAPI.Data.Entities.Aspnetuser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -241,7 +348,7 @@ namespace MySqlAuthAPI.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("MySqlAuthAPI.Data.UserMaster", null)
+                    b.HasOne("MySqlAuthAPI.Data.Entities.Aspnetuser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -256,7 +363,7 @@ namespace MySqlAuthAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MySqlAuthAPI.Data.UserMaster", null)
+                    b.HasOne("MySqlAuthAPI.Data.Entities.Aspnetuser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -265,11 +372,36 @@ namespace MySqlAuthAPI.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("MySqlAuthAPI.Data.UserMaster", null)
+                    b.HasOne("MySqlAuthAPI.Data.Entities.Aspnetuser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("MySqlAuthAPI.Data.Entities.LoginSession", b =>
+                {
+                    b.HasOne("MySqlAuthAPI.Data.Entities.Aspnetuser", "User")
+                        .WithOne("LoginSession")
+                        .HasForeignKey("MySqlAuthAPI.Data.Entities.LoginSession", "UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MySqlAuthAPI.Data.Entities.UserMaster", b =>
+                {
+                    b.HasOne("MySqlAuthAPI.Data.Entities.Aspnetuser", "User")
+                        .WithOne("UserMaster")
+                        .HasForeignKey("MySqlAuthAPI.Data.Entities.UserMaster", "UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MySqlAuthAPI.Data.Entities.Aspnetuser", b =>
+                {
+                    b.Navigation("LoginSession");
+
+                    b.Navigation("UserMaster");
                 });
 #pragma warning restore 612, 618
         }

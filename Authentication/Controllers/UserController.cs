@@ -1,18 +1,10 @@
-﻿using Authentication.Data;
-using Authentication.Data.Entities;
-using Authentication.Models;
+﻿using Authentication.Models;
+using Authentication.Services.Interfaces;
 
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 using System.ComponentModel.DataAnnotations;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace Authentication.Controllers
 {
@@ -21,89 +13,32 @@ namespace Authentication.Controllers
     [Authorize(AuthenticationSchemes = "Bearer")]
     public class UserController : ControllerBase
     {
-        private readonly AuthDbContext _dbContext;
-        private readonly SignInManager<AspNetUser> _signInManager;
-        private readonly UserManager<AspNetUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IUserService _userService;
 
-        public UserController(AuthDbContext dbContext,
-            SignInManager<AspNetUser> signInManager,
-            UserManager<AspNetUser> userManager,
-            RoleManager<IdentityRole> roleManager,
-            IHttpContextAccessor httpContextAccessor)
+        public UserController(IUserService userService)
         {
-            _dbContext = dbContext;
-            _signInManager = signInManager;
-            _userManager = userManager;
-            _roleManager = roleManager;
-            _httpContextAccessor = httpContextAccessor;
+           _userService = userService;
         }
 
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> CreateUser(UserRegistrationModel model)
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                var result = await _userService.CreateUser(model);
+                if (result.Success)
                 {
-                    var user = await _userManager.FindByEmailAsync(model.Email);
-                    if (user != null)
-                    {
-                        return BadRequest("User already exist with the same email. Please try with another email.");
-                    }
-
-                    string username = $"User000{await _dbContext.AspNetUsers.CountAsync() + 1}";
-
-                    var userData = new AspNetUser()
-                    {
-                        Email = model.Email,
-                        PhoneNumber = model.Mobile,
-                        UserName = username
-                    };
-                    string password = "Test@1234";
-
-                    var result = await _userManager.CreateAsync(userData, password);
-                    if (!result.Succeeded)
-                    {
-                        return BadRequest("User registration failed!");
-                    }
-
-                    if (!await _roleManager.RoleExistsAsync("User"))
-                    {
-                        await _roleManager.CreateAsync(new IdentityRole("User"));
-                    }
-
-                    if (await _roleManager.RoleExistsAsync("User"))
-                    {
-                        await _userManager.AddToRoleAsync(userData, "User");
-                    }
-
-                    UserMaster userMaster = new UserMaster()
-                    {
-                        CreatedOn = DateTime.Now,
-                        Email = model.Email,
-                        FirstName = model.FirstName,
-                        LastName = model.LastName,
-                        IsActive = true,
-                        PhoneNumber = model.Mobile,
-                        UserId = userData.Id
-                    };
-
-                    _dbContext.UserMasters.Add(userMaster);
-                    _dbContext.SaveChanges();
-
                     return Ok(result);
                 }
                 else
                 {
-                    return BadRequest(ModelState.Values.SelectMany(x => x.Errors));
+                    return BadRequest(result);
                 }
             }
-            catch (Exception ex)
+            else
             {
-                throw ex;
+                return BadRequest(ModelState.Values.SelectMany(s => s.Errors));
             }
         }
 
@@ -113,67 +48,15 @@ namespace Authentication.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userMaster = await _dbContext.AspNetUsers.FirstOrDefaultAsync(x => x.UserName == username && x.UserMaster.IsActive);
-                if (userMaster == null)
+                var result = await _userService.Authentication(username, password);
+                if (result.Success)
                 {
-                    return BadRequest("User has been de-activated.");
+                    return Ok(result);
                 }
-
-                var signInResult = await _signInManager.PasswordSignInAsync(userMaster, password, isPersistent: false, lockoutOnFailure: true);
-                if (signInResult.IsLockedOut)
+                else
                 {
-                    return BadRequest($"User has been blocked due to invalid attempts of login.");
+                    return BadRequest(result);
                 }
-                
-                if (!signInResult.Succeeded)
-                {
-                    return BadRequest($"Username or password was incorrect. Retry attempt {userMaster.AccessFailedCount}/5");
-                }
-
-                var userRoles = await _userManager.GetRolesAsync(userMaster);
-
-                var claims = new List<Claim>()
-                {
-                    new Claim(ClaimTypes.NameIdentifier, username),
-                    new Claim(ClaimTypes.Sid, _httpContextAccessor.HttpContext.Session.Id),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-                };
-
-                foreach (var userRole in userRoles)
-                {
-                    claims.Add(new Claim(ClaimTypes.Role, userRole));
-                }
-
-                var token = GenerateJSONWebToken(claims);
-
-                var loginSession = await _dbContext.LoginSessions.Where(x => x.UserId == userMaster.Id).ToListAsync();
-                if (loginSession.Any())
-                {
-                    await _dbContext.LoginSessions.Where(x => x.UserId == userMaster.Id).ExecuteUpdateAsync(u =>
-                    u.SetProperty(p => p.IsSessionExpired, true)
-                    .SetProperty(p => p.ExpiredOn, DateTime.Now));
-                }
-
-                await _dbContext.LoginSessions.AddAsync(new LoginSession()
-                {
-                    CreatedOn = DateTime.Now,
-                    ExpiredOn = DateTime.Now,
-                    IsSessionExpired = false,
-                    LoginFrom = "WEB",
-                    SessionName = _httpContextAccessor.HttpContext.Session.Id,
-                    UserId = userMaster.Id,
-                    Token = new JwtSecurityTokenHandler().WriteToken(token),
-                    Validity = token.ValidTo.ToString()
-                });
-
-                await _dbContext.SaveChangesAsync();
-
-                return Ok(new
-                {
-                    Token = new JwtSecurityTokenHandler().WriteToken(token),
-                    ExpiredOn = token.ValidTo.ToString(),
-                    SessionId = _httpContextAccessor.HttpContext.Session.Id
-                });
             }
             else
             {
@@ -181,19 +64,6 @@ namespace Authentication.Controllers
             }
         }
 
-        private JwtSecurityToken GenerateJSONWebToken(IEnumerable<Claim> claims)
-        {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("lnO0xg5lemIXjvxSgMqkffuJv0eGrKHB"));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken("PracticeIssuer",
-                "PracticeIssuer", 
-                claims,
-                notBefore: DateTime.Now,
-                expires: DateTime.Now.AddMinutes(5),
-                signingCredentials: credentials);
-
-            return token;
-        }
     }
 }

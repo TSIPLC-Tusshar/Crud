@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MySqlAuthAPI.Data;
 
@@ -19,21 +20,7 @@ namespace MySqlAuthAPI.Migrations
                 .HasAnnotation("ProductVersion", "8.0.16")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("Aspnetuserrole", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("RoleId")
-                        .HasColumnType("varchar(255)");
-
-                    b.HasKey("UserId", "RoleId")
-                        .HasName("PRIMARY");
-
-                    b.HasIndex(new[] { "RoleId" }, "IX_AspNetUserRoles_RoleId");
-
-                    b.ToTable("aspnetuserroles", (string)null);
-                });
+            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -58,7 +45,7 @@ namespace MySqlAuthAPI.Migrations
                         .IsUnique()
                         .HasDatabaseName("RoleNameIndex");
 
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.ToTable("aspnetroles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -66,6 +53,8 @@ namespace MySqlAuthAPI.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("longtext");
@@ -81,7 +70,7 @@ namespace MySqlAuthAPI.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims", (string)null);
+                    b.ToTable("aspnetroleclaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -89,6 +78,8 @@ namespace MySqlAuthAPI.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("longtext");
@@ -104,7 +95,7 @@ namespace MySqlAuthAPI.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims", (string)null);
+                    b.ToTable("aspnetuserclaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -139,10 +130,9 @@ namespace MySqlAuthAPI.Migrations
 
                     b.HasKey("UserId", "RoleId");
 
-                    b.HasIndex("RoleId")
-                        .HasDatabaseName("IX_AspNetUserRoles_RoleId1");
+                    b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles", (string)null);
+                    b.ToTable("aspnetuserroles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -162,66 +152,6 @@ namespace MySqlAuthAPI.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("MySqlAuthAPI.Data.Entities.Aspnetrole", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("longtext")
-                        .HasDefaultValueSql("'NULL'");
-
-                    b.Property<string>("Name")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)")
-                        .HasDefaultValueSql("'NULL'");
-
-                    b.Property<string>("NormalizedName")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)")
-                        .HasDefaultValueSql("'NULL'");
-
-                    b.HasKey("Id")
-                        .HasName("PRIMARY");
-
-                    b.HasIndex(new[] { "NormalizedName" }, "RoleNameIndex")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex1");
-
-                    b.ToTable("aspnetroles", (string)null);
-                });
-
-            modelBuilder.Entity("MySqlAuthAPI.Data.Entities.Aspnetroleclaim", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int(11)");
-
-                    b.Property<string>("ClaimType")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("longtext")
-                        .HasDefaultValueSql("'NULL'");
-
-                    b.Property<string>("ClaimValue")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("longtext")
-                        .HasDefaultValueSql("'NULL'");
-
-                    b.Property<string>("RoleId")
-                        .HasColumnType("varchar(255)");
-
-                    b.HasKey("Id")
-                        .HasName("PRIMARY");
-
-                    b.HasIndex(new[] { "RoleId" }, "IX_AspNetRoleClaims_RoleId")
-                        .HasDatabaseName("IX_AspNetRoleClaims_RoleId1");
-
-                    b.ToTable("aspnetroleclaims", (string)null);
                 });
 
             modelBuilder.Entity("MySqlAuthAPI.Data.Entities.Aspnetuser", b =>
@@ -253,7 +183,7 @@ namespace MySqlAuthAPI.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(6)
-                        .HasColumnType("datetime")
+                        .HasColumnType("datetime(6)")
                         .HasDefaultValueSql("'NULL'");
 
                     b.Property<string>("NormalizedEmail")
@@ -313,102 +243,13 @@ namespace MySqlAuthAPI.Migrations
                     b.ToTable("aspnetusers", (string)null);
                 });
 
-            modelBuilder.Entity("MySqlAuthAPI.Data.Entities.Aspnetuserclaim", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int(11)");
-
-                    b.Property<string>("ClaimType")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("longtext")
-                        .HasDefaultValueSql("'NULL'");
-
-                    b.Property<string>("ClaimValue")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("longtext")
-                        .HasDefaultValueSql("'NULL'");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("varchar(255)");
-
-                    b.HasKey("Id")
-                        .HasName("PRIMARY");
-
-                    b.HasIndex(new[] { "UserId" }, "IX_AspNetUserClaims_UserId")
-                        .HasDatabaseName("IX_AspNetUserClaims_UserId1");
-
-                    b.ToTable("aspnetuserclaims", (string)null);
-                });
-
-            modelBuilder.Entity("MySqlAuthAPI.Data.Entities.Aspnetuserlogin", b =>
-                {
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("ProviderKey")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("ProviderDisplayName")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("longtext")
-                        .HasDefaultValueSql("'NULL'");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("varchar(255)");
-
-                    b.HasKey("LoginProvider", "ProviderKey")
-                        .HasName("PRIMARY");
-
-                    b.HasIndex(new[] { "UserId" }, "IX_AspNetUserLogins_UserId")
-                        .HasDatabaseName("IX_AspNetUserLogins_UserId1");
-
-                    b.ToTable("aspnetuserlogins", (string)null);
-                });
-
-            modelBuilder.Entity("MySqlAuthAPI.Data.Entities.Aspnetusertoken", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("Value")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("longtext")
-                        .HasDefaultValueSql("'NULL'");
-
-                    b.HasKey("UserId", "LoginProvider", "Name")
-                        .HasName("PRIMARY");
-
-                    b.ToTable("aspnetusertokens", (string)null);
-                });
-
-            modelBuilder.Entity("MySqlAuthAPI.Data.Entities.Efmigrationshistory", b =>
-                {
-                    b.Property<string>("MigrationId")
-                        .HasMaxLength(150)
-                        .HasColumnType("varchar(150)");
-
-                    b.Property<string>("ProductVersion")
-                        .HasMaxLength(32)
-                        .HasColumnType("varchar(32)");
-
-                    b.HasKey("MigrationId")
-                        .HasName("PRIMARY");
-
-                    b.ToTable("__efmigrationshistory", (string)null);
-                });
-
             modelBuilder.Entity("MySqlAuthAPI.Data.Entities.LoginSession", b =>
                 {
                     b.Property<int>("SessionId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("SessionId"));
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime(6)");
@@ -440,7 +281,7 @@ namespace MySqlAuthAPI.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("LoginSessions", (string)null);
+                    b.ToTable("loginsessions", (string)null);
                 });
 
             modelBuilder.Entity("MySqlAuthAPI.Data.Entities.UserMaster", b =>
@@ -448,6 +289,8 @@ namespace MySqlAuthAPI.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime(6)");
@@ -479,24 +322,7 @@ namespace MySqlAuthAPI.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("UserMaster", (string)null);
-                });
-
-            modelBuilder.Entity("Aspnetuserrole", b =>
-                {
-                    b.HasOne("MySqlAuthAPI.Data.Entities.Aspnetrole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_AspNetUserRoles_AspNetRoles_RoleId");
-
-                    b.HasOne("MySqlAuthAPI.Data.Entities.Aspnetuser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_AspNetUserRoles_AspNetUsers_UserId");
+                    b.ToTable("usermaster", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -550,48 +376,6 @@ namespace MySqlAuthAPI.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MySqlAuthAPI.Data.Entities.Aspnetroleclaim", b =>
-                {
-                    b.HasOne("MySqlAuthAPI.Data.Entities.Aspnetrole", "Role")
-                        .WithMany("Aspnetroleclaims")
-                        .HasForeignKey("RoleId")
-                        .HasConstraintName("FK_AspNetRoleClaims_AspNetRoles_RoleId");
-
-                    b.Navigation("Role");
-                });
-
-            modelBuilder.Entity("MySqlAuthAPI.Data.Entities.Aspnetuserclaim", b =>
-                {
-                    b.HasOne("MySqlAuthAPI.Data.Entities.Aspnetuser", "User")
-                        .WithMany("Aspnetuserclaims")
-                        .HasForeignKey("UserId")
-                        .HasConstraintName("FK_AspNetUserClaims_AspNetUsers_UserId");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("MySqlAuthAPI.Data.Entities.Aspnetuserlogin", b =>
-                {
-                    b.HasOne("MySqlAuthAPI.Data.Entities.Aspnetuser", "User")
-                        .WithMany("Aspnetuserlogins")
-                        .HasForeignKey("UserId")
-                        .HasConstraintName("FK_AspNetUserLogins_AspNetUsers_UserId");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("MySqlAuthAPI.Data.Entities.Aspnetusertoken", b =>
-                {
-                    b.HasOne("MySqlAuthAPI.Data.Entities.Aspnetuser", "User")
-                        .WithMany("Aspnetusertokens")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_AspNetUserTokens_AspNetUsers_UserId");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("MySqlAuthAPI.Data.Entities.LoginSession", b =>
                 {
                     b.HasOne("MySqlAuthAPI.Data.Entities.Aspnetuser", "User")
@@ -610,19 +394,8 @@ namespace MySqlAuthAPI.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("MySqlAuthAPI.Data.Entities.Aspnetrole", b =>
-                {
-                    b.Navigation("Aspnetroleclaims");
-                });
-
             modelBuilder.Entity("MySqlAuthAPI.Data.Entities.Aspnetuser", b =>
                 {
-                    b.Navigation("Aspnetuserclaims");
-
-                    b.Navigation("Aspnetuserlogins");
-
-                    b.Navigation("Aspnetusertokens");
-
                     b.Navigation("LoginSession");
 
                     b.Navigation("UserMaster");

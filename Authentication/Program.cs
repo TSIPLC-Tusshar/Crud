@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Authentication.Services.Interfaces;
+using Authentication.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -72,6 +74,8 @@ builder.Services.AddSession(options =>
     options.IOTimeout = TimeSpan.FromSeconds(60);
 });
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
