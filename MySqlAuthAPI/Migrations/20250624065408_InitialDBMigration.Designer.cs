@@ -12,8 +12,8 @@ using MySqlAuthAPI.Data;
 namespace MySqlAuthAPI.Migrations
 {
     [DbContext(typeof(MySqlDbContext))]
-    [Migration("20250605110201_intialmigratedMysql")]
-    partial class intialmigratedMysql
+    [Migration("20250624065408_InitialDBMigration")]
+    partial class InitialDBMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MySqlAuthAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class intialmigratedMysql : Migration
+    public partial class InitialDBMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -40,22 +40,22 @@ namespace MySqlAuthAPI.Migrations
                 {
                     Id = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    UserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true, defaultValueSql: "'NULL'")
+                    UserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true, defaultValueSql: null)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    NormalizedUserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true, defaultValueSql: "'NULL'")
+                    NormalizedUserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true, defaultValueSql: null)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Email = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true, defaultValueSql: "'NULL'")
+                    Email = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true, defaultValueSql: null)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    NormalizedEmail = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true, defaultValueSql: "'NULL'")
+                    NormalizedEmail = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true, defaultValueSql: null)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     EmailConfirmed = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    PasswordHash = table.Column<string>(type: "longtext", nullable: true, defaultValueSql: "'NULL'")
+                    PasswordHash = table.Column<string>(type: "longtext", nullable: true, defaultValueSql: null)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    SecurityStamp = table.Column<string>(type: "longtext", nullable: true, defaultValueSql: "'NULL'")
+                    SecurityStamp = table.Column<string>(type: "longtext", nullable: true, defaultValueSql: null)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ConcurrencyStamp = table.Column<string>(type: "longtext", nullable: true, defaultValueSql: "'NULL'")
+                    ConcurrencyStamp = table.Column<string>(type: "longtext", nullable: true, defaultValueSql: null)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    PhoneNumber = table.Column<string>(type: "longtext", nullable: true, defaultValueSql: "'NULL'")
+                    PhoneNumber = table.Column<string>(type: "longtext", nullable: true, defaultValueSql: null)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     PhoneNumberConfirmed = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     TwoFactorEnabled = table.Column<bool>(type: "tinyint(1)", nullable: false),
